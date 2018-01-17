@@ -1,5 +1,5 @@
 import os
-from app import create_app, db
+from musicapp import create_app, db
 from flask_script import Manager, Shell
 from flask_migrate import Migrate, MigrateCommand
 

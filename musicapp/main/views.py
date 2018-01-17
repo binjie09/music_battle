@@ -25,11 +25,11 @@ def register():
     return render_template('register.html')
 
 
-@main.route('/rank')  #排名界面
+@main.route('/rank')  # 排名界面
 def rank():
     return render_template('rank.html')
 
 
-@main.route('/<musicid>')
+@main.route('/<musicid>')  # 音乐打分界面
 def music(musicid):
     return render_template('media.html')
