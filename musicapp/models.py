@@ -6,18 +6,13 @@
 
 from mongoengine import *
 from flask_login import UserMixin
-from . import login_manger
+
+import uuid
 
 connect('test', host='localhost', port=27017)
 
 
-@login_manger.user_loader
-def load_user(name):
-    return Users.objects(name=name).first()
-
-
 class Users(Document, UserMixin):  # 用户类->继承自mongoengine的Document类和用户登录验证绑定 UserMixin类，使用对象文档映射器来更好的MVC
-
     name = StringField(required=True, max_length=200)
     email = StringField(required=True)
     password = StringField(required=True)
@@ -45,6 +40,9 @@ class Users(Document, UserMixin):  # 用户类->继承自mongoengine的Document�
             return True
         return False
 
+    def get_id(self):
+        return self.name
+
 
 class Contest(Document):  # 比赛类
     id = StringField(required=True)
@@ -58,8 +56,8 @@ class Contest(Document):  # 比赛类
     start_time = StringField(required=True);
 
 
-class Music(Document):  # 音乐角色类
-    id = StringField(required=True)
+class Musics(Document):  # 音乐角色类
+    m_id = StringField(required=True)
     name = StringField(required=True)
     rank = IntField(required=True)
     owner = StringField(required=True)

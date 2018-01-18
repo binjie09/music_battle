@@ -9,6 +9,7 @@ from flask import render_template
 from . import main
 from flask_login import login_required
 from flask_login import current_user
+from musicapp.models import Musics
 
 
 @main.route('/')  # 主页面
@@ -23,7 +24,7 @@ def register():
 
 @main.route('/rank')  # 排名界面
 def rank():
-    return render_template('rank.html', title='排行榜')
+    return render_template('rank.html', title='排行榜', musics=Musics.objects.order_by("-rank"))
 
 
 @main.route('/<musicid>')  # 音乐打分界面
