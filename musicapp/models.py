@@ -5,24 +5,28 @@
 """
 
 from mongoengine import *
-
+from flask_login import UserMixin
+from . import login_manger
 
 connect('test', host='localhost', port=27017)
 
 
-class User(Document):  # 用户类->继承自mongoengine的Document类，使用对象文档映射器来更好的MVC
+@login_manger.user_loader
+def load_user(name):
+    return Users.objects(name=name).first()
+
+
+class Users(Document, UserMixin):  # 用户类->继承自mongoengine的Document类和用户登录验证绑定 UserMixin类，使用对象文档映射器来更好的MVC
+
     name = StringField(required=True, max_length=200)
     email = StringField(required=True)
     password = StringField(required=True)
     orange = IntField(required=True)
 
-    def save(self):  # 保存到数据库
-        pass
-
     @staticmethod
     def query_users(flag, username):  # 查询用户的静态方法，如果flag为1则查询所有用户
         if flag == 1:
-            return
+            return Users.objects(name=username)
         else:
             return
 
@@ -36,11 +40,16 @@ class User(Document):  # 用户类->继承自mongoengine的Document类，使用�
     def dian_zan(self):  # 给该用户点赞
         pass
 
+    def confirm_password(self, passwd):  # 验证密码是否正确
+        if self.password == passwd:
+            return True
+        return False
+
 
 class Contest(Document):  # 比赛类
     id = StringField(required=True)
     pic = StringField(required=True)  # 比赛封面
-    person_a =  StringField(required=True)
+    person_a = StringField(required=True)
     voice_a = StringField(required=True)  # 声音文件的路径
     person_b = StringField(required=True)
     voice_b = StringField(required=True)  # 声音文件的路径
