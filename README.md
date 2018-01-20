@@ -1,4 +1,4 @@
-# music_battle
+# music_battle 一个基于音乐驱动的声音天梯竞赛
 小学期前3天做的
 需要安装mongodb，启动MongoDB后创建test数据库，然后运行 python manage.py runserver即可
 
