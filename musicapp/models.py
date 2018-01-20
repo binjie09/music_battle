@@ -12,24 +12,19 @@ import uuid
 connect('test', host='localhost', port=27017)
 
 
-class Users(Document, UserMixin):  # 用户类->继承自mongoengine的Document类和用户登录验证绑定 UserMixin类，使用对象文档映射器来更好的MVC
+class Users(Document, UserMixin):
+    """
+        Users class extends Document for register in mongoengine
+        Users class extends UserMixin for register in login_manager to manage user login
+    """
     name = StringField(required=True, max_length=200)
     email = StringField(required=True)
     password = StringField(required=True)
     orange = IntField(required=True)
-
-    @staticmethod
-    def query_users(flag, username):  # 查询用户的静态方法，如果flag为1则查询所有用户
-        if flag == 1:
-            return Users.objects(name=username)
-        else:
-            return
+    zan = IntField(min_value=0)
 
     def get_music(self):  # 获取该用户的所有音乐 返回值为一个collection
-        pass
-
-    @staticmethod
-    def battle(user_a, user_b):  # 两个用户评分
+        """get a user's musics"""
         pass
 
     def dian_zan(self):  # 给该用户点赞
@@ -46,20 +41,36 @@ class Users(Document, UserMixin):  # 用户类->继承自mongoengine的Document�
 
 class Contest(Document):  # 比赛类
     id = StringField(required=True)
-    pic = StringField(required=True)  # 比赛封面
+    pic = StringField(required=True)  # Event cover pic
     person_a = StringField(required=True)
-    voice_a = StringField(required=True)  # 声音文件的路径
+    voice_a = StringField(required=True)  # a's music id
     person_b = StringField(required=True)
-    voice_b = StringField(required=True)  # 声音文件的路径
-    vote_a = IntField(required=True)  # 给a投票的人数
-    vote_b: IntField(required=True)  # 给b投票的人数
+    voice_b = StringField(required=True)  # b's music id
+    vote_a = IntField(required=True)  # The number of votes for a
+    vote_b = IntField(required=True)  # The number of votes for b
     start_time = StringField(required=True);
 
+    # (1) P(D) = 1 / (1 + 10 ^ (-D / 400))
+    # (2) D = Ra - Rb
+    # (3) We = P(D1) + P(D2) + P(D3) + ... + P(Dn0) - ---连续多次比赛后的We
+    # (4) Rn = Ro + K * (W - We)
+    @staticmethod
+    def battle(voice_a_id, voice_b_id, is_a_win):
+        """Get voice_a's rank after battle with voice_b"""
+        ranka = Musics.objects(m_id=voice_a_id).first().rank
+        rankb = Musics.objects(m_id=voice_b_id).first().rank
+        d = ranka - rankb  # (2)
+        pd = 1 / (1 + 10 ** (-d / 400))  # (3)
+        rn = ranka + 20 * (is_a_win - pd)  # (4)
+        print('胜率可能是：%f' %(pd))
+        return rn
 
-class Musics(Document):  # 音乐角色类
-    m_id = StringField(required=True)
-    name = StringField(required=True)
-    rank = IntField(required=True)
+
+class Musics(Document):
+    """Musical character"""
+    m_id = StringField(required=True)  # m_id is the timestamp and also is the file name of music in static folder
+    name = StringField(required=True)  # music's name
+    rank = IntField(required=True)     # t
     owner = StringField(required=True)
 
     def matching(self):  # 匹配对手（放到一个匹配队列里面）每次都让队列最前端的音乐角色选择rank分和他最近的音乐角色匹配，匹配成功则出队，形成一个Contest，生成Contest对象

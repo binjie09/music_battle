@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+{% include 'head.html' %}
+<body>
+{% include 'nav.html' %}
+
+<label>
+    {% for message in get_flashed_messages() %}
+        <p>{{ message }}</p>
+    {% endfor %}
+</label>
+<form action="" method=post enctype=multipart/form-data>
+    <p><input type=file name=file>
+        <input type=text name=music_name>
+        <input type=submit value=Upload>
+</form>
+
+<script src="static/js/jquery.min.js"></script>
+<!-- 包括所有已编译的插件 -->
+<script src="static/js/bootstrap.min.js"></script>
+</body>
+</html>

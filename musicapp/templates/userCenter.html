@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+{% include 'head.html' %}
+<body>
+{% include 'nav.html' %}
+<ul class="list-group">
+    <li class="list-group-item">我的音乐</li>
+    <li class="list-group-item">我的橘子：{{ current_user.orange }}🍊</li>
+    <li class="list-group-item"><a href="/logout">注销</a></li>
+    {% for i in musics %}
+        <li class="list-group-item">名字：{{ i.name }} rank:{{ i.rank }} 所有者:{{ i.owner }}<a
+                href="static/media/{{ i.m_id }}.mp3">音乐链接</a></li>
+    {% endfor %}
+</ul>
+<script src="static/js/jquery.min.js"></script>
+<!-- 包括所有已编译的插件 -->
+<script src="static/js/bootstrap.min.js"></script>
+</body>
+</html>

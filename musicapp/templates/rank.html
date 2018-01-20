@@ -5,7 +5,7 @@
 {% include 'nav.html' %}
 <ul class="list-group">
     {% for i in musics %}
-        <li class="list-group-item">{{ i.name }} rank:{{ i.rank }}</li>
+        <li class="list-group-item">名字：{{ i.name }} rank:{{ i.rank }} 所有者:{{ i.owner }}<a href="static/media/{{ i.m_id }}.mp3">音乐链接</a> </li>
     {% endfor %}
 </ul>
 <script src="static/js/jquery.min.js"></script>
